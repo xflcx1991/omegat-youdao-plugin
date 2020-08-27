@@ -67,7 +67,9 @@ dependencies {
     // https://mvnrepository.com/artifact/cn.hutool/hutool-json
     compile group: 'cn.hutool', name: 'hutool-json', version: '5.4.0'
     // https://mvnrepository.com/artifact/cn.hutool/hutool-http
-    compile group: 'cn.hutool', name: 'hutool-http', version: '5.4.0'
+    compile group: 'cn.hutool', name: 'hutool-http', version: '5.4.0'// https://mvnrepository.com/artifact/cn.hutool/hutool-crypto
+    compile group: 'cn.hutool', name: 'hutool-crypto', version: '5.4.0'
+
 }
 //test.useTestNG()
 
