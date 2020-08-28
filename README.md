@@ -1,5 +1,5 @@
-# OmegaT 彩云小译插件
-一个能让 OmegaT 从彩云小译获取机器翻译的插件。内置了官方测试 Key，不用配置也可用，但不保证可靠性（经常会触发使用上限），所以还是建议申请一个彩云小译的 Token。
+# OmegaT 有道翻译插件
+一个能让 OmegaT 从有道翻译获取机器翻译的插件。官方没有提供测试 Key，必须先申请再配置使用。使用方法见下方。
 
 已在 OmegaT 4.3.2 和 gradle 3.0 环境下测试通过。
 
@@ -10,20 +10,18 @@
 
 特别感谢 [@Ninty](https://github.com/c19354837 "Ninty") 介绍的 Gson 和 OkHttp 用来处理数据。不过后来发现只需要一个很小子集的功能，也为了减小生成 jar 包的大小，工具包改为了 Hutool。
 
-鉴于 OmegaT 插件教程太少和零散，我将在 readme 的[最下面](#introduction)讲以下入门环境搭建和参考资料。
+关于 OmegaT 插件项目开发环境配置和开发相关资料请参见我的另一个 OmegaT 彩云小译插件项目的 [readme](https://gitee.com/xffish/omegat-caiyun-interpreter-plugin)。
 
 ## 使用方法
-1. 首先最好申请一个彩云小译 Token
-
-    登录进[彩云科技开放平台](https://dashboard.caiyunapp.com/user/sign_in/)，申请开通小译 Token（每月翻译 100 万字以内是免费的），也许需要等待一到两个工作日。
-    
-2. 下载 releases 里的 zip，解压得到 jar 文件和别的插件一样放进 OmegaT 插件目录。这个目录默认应该在 OmegaT 安装目录下的`plugins`文件夹
-3. 打开 OmegaT，选项——首选项——机器翻译，选中`Caiyun Xiaoyi Translate`，点击配置，然后填入第一步得到 Token，最后勾选启用，点确定关闭首选项窗口。
-4. 没有第 4 步，做完上面 3 步，打开你的翻译项目，你应该能在机器翻译面板看到来自彩云小译的结果了。Enjoy it!
+1. 创建应用。登录[有道智云平台](https://ai.youdao.com/login.s)后，点击“应用管理”->“我的应用”->“创建应用”，根据提示信息，完成应用创建。 在创建应用时请选择“API”， 应用创建成功后您可获取应用ID（appKey）和应用密钥等信息。创建是即时开通的，下同。
+2. 创建翻译实例。登录上述平台后，点击“自然语言翻译”->“翻译实例”->“创建实例”，根据提示信息，完成实例创建。创建实例时请选择实例类型为“文本翻译”。实例创建成功后需要点击实例列表最后一列的“绑定应用”，根据弹出窗口选择上一步创建的应用即可。
+3. 下载 releases 里的 zip，解压得到 jar 文件和别的插件一样放进 OmegaT 插件目录。这个目录默认应该在 OmegaT 安装目录下的`plugins`文件夹
+4. 打开 OmegaT，选项——首选项——机器翻译，选中`Caiyun Xiaoyi Translate`，点击配置，然后填入第一步得到应用ID和应用密钥，最后勾选启用，点确定关闭首选项窗口。
+5. 没有第 5 步，做完上面 4 步，打开你的翻译项目，你应该能在机器翻译面板看到来自有道翻译的结果了。Enjoy it!
 
 ## 自行编译
 1. 克隆本项目，进入项目根目录，然后运行`./gradlew build`。
-2. 在`build/libs/`目录下，拷贝`omegat-caiyun-interpreter-plugin-*.jar`文件到 OmegaT 的插件目录。
+2. 在`build/libs/`目录下，拷贝`omegat-youdao-plugin-*.jar`文件到 OmegaT 的插件目录。
 
 ## 许可证
 本项目采用[木兰宽松许可证, 第2版](https://license.coscl.org.cn/MulanPSL2/)
@@ -31,19 +29,5 @@
 * [Hutool](https://hutool.cn/) 5.4.0（木兰宽松许可证, 第2版）
 
 ---
-
-<h1 id="introduction">OmegaT 插件开发起步</h1>
-官方给的资料有两处，分别是
-* https://github.com/omegat-org/omegat
-
-    在`docs_devel`目录及其子目录下有两篇介绍入门的文章，分别是《OmegaT developer's guide》和《Creating an OmegaT Plugin》，格式是 odt 需要 LibreOffice 打开（当然也可以用 OpenOffice）。示例代码是 Google 翻译插件，可以看出和本项目的彩云小译的插件代码结构是相似的。
-* https://github.com/omegat-org/plugin-skeleton
-
-    这个官方示例是用来提供一个快速搭建开发环境的。用了 Gradle 而不是上一处示例项目的 Ant,目录结构也有变化。现在应该用这个项目，上一处仅仅用来当资料参考。参考本项目的 readme 里的步骤，应该很快可以把一个合法的插件项目创建出来。
-
-除了官方代码，应该多看看别的项目写的代码，比如上文提到过的
-> https://github.com/yoyicue/omegat-tencent-plugin
-> https://github.com/omegat-org/omegat/blob/854b6b5a66a0306e5c27e74c0b5d656ed80b2bd4/src/org/omegat/core/machinetranslators/YandexTranslate.java
-> GoogleTranslateWithoutApiKey
-
-另外本彩云小译翻译插件代码也做了注释可以参考。
+注意！！！
+> 有道智云平台不像彩云小译一样在低频率使用下一直免费。有道的方式是注册就提供 50 元体验金，另外在[价格中心](https://ai.youdao.com/price-center.s)最下面有两个微信客服二维码，任选其一添加后会再送 50 元体验金。这样一共 100 元的体验金，会按照 48元/百万字符的标准扣费，即使没到百万字符，也是按照用多少扣多少。所以最终该平台还是要收费的，不过能用就用嘛。
