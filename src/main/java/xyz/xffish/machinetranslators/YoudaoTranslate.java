@@ -258,7 +258,7 @@ public class YoudaoTranslate extends BaseTranslate {
         String lvSourceLang = sLang.getLanguageCode().substring(0, 2).toLowerCase();
         lvSourceLang = omegatLang2YoudaoLang(lvSourceLang);
 
-        String lvTargetLang = sLang.getLanguageCode().substring(0, 2).toLowerCase();
+        String lvTargetLang = tLang.getLanguageCode().substring(0, 2).toLowerCase();
         lvTargetLang = omegatLang2YoudaoLang(lvTargetLang);
 
         // 获取应用 ID——appKey
