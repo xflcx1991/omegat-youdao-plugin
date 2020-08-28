@@ -143,7 +143,7 @@ public class YoudaoTranslate extends BaseTranslate {
      * 在软件启动时会自动调用该函数来注册插件
      */
     public static void loadPlugins() {
-        logger.info("加载 YoudaoTranslate Plugin");
+        logger.debug("加载 YoudaoTranslate Plugin");
 
         Core.registerMachineTranslationClass(YoudaoTranslate.class);
     }
@@ -249,7 +249,7 @@ public class YoudaoTranslate extends BaseTranslate {
         String prev = getFromCache(sLang, tLang, lvShortText);
         if (prev != null) {
             // 啊，有缓存，那就直接返回不用请求了
-            logger.info("啊，有缓存，太美妙了：{}", prev);
+            logger.debug("啊，有缓存，太美妙了：{}", prev);
             return prev;
         }
 
@@ -276,7 +276,7 @@ public class YoudaoTranslate extends BaseTranslate {
         String secretKey = getCredential(PROPERTY_APP_KEY);
 
 
-        logger.info("secretKey = {}", secretKey);
+        logger.debug("secretKey = {}", secretKey);
         String curtime = String.valueOf(System.currentTimeMillis() / 1000);
         // 开始计算
         String originSign = appKey + truncate(lvShortText) + uuid + curtime + secretKey;
@@ -300,7 +300,7 @@ public class YoudaoTranslate extends BaseTranslate {
         String responseBody = HttpUtil.post(URL, paramMap);
 
 
-        logger.info("response body = {}", responseBody);
+        logger.debug("response body = {}", responseBody);
 
         JSONObject jsonObject = JSONUtil.parseObj(responseBody);
 
