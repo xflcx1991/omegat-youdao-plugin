@@ -75,7 +75,11 @@ dependencies {
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+    options.encoding = "UTF-8"
 }
+
+
+
 
 // Build FatJar
 //
@@ -143,6 +147,9 @@ task sourceJar(type: Jar) {
 javadoc {
     classpath += configurations.provided
     options.locale = 'en_US'
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.links 'http://docs.oracle.com/javase/8/docs/api'
 }
 
 groovydoc {
