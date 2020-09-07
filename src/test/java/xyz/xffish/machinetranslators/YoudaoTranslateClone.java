@@ -14,7 +14,6 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.omegat.core.Core;
-import org.omegat.core.machinetranslators.BaseTranslate;
 import org.omegat.gui.exttrans.MTConfigDialog;
 import org.omegat.util.Language;
 import org.slf4j.Logger;
@@ -26,12 +25,12 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-1. 多语种
-2. 代码结构
-3. 增加缓存，减少网络请求
+/**
+ * 搞不定脱离 OmegaT 环境的初始化，只能重新搞一个类似功能但不依赖 OmegaT 的功能类.
+ * BaseTranslate 构造函数用到了已经初始化的 Preferences 类，测试环境搞不定如何初始化。
+ * 只能手动维护 YoudaoTranslate 和 YoudaoTranslateClone 的同步
  */
-public class YoudaoTranslate extends BaseTranslate {
+public class YoudaoTranslateClone extends BaseTranslateClone{
     /**
      * 设置存储 key 的名字，读取和设置值由 OmegaT 提供 API 来操作
      */
@@ -162,11 +161,11 @@ public class YoudaoTranslate extends BaseTranslate {
         //判断翻译缓存里有没有
         // U+2026 HORIZONTAL ELLIPSIS 水平省略号 …
         String lvShortText = text.length() > 5000 ? text.substring(0, 4997) + "\u2026" : text;
-        // TODO:不写 putToCache 这里的cache是无用的
         String prev = getFromCache(sLang, tLang, lvShortText);
         if (prev != null) {
             // 啊，有缓存，那就直接返回不用请求了
-            logger.info("啊，有缓存，太美妙了：{}", prev);
+            System.out.println("啊，有缓存，太美妙了：" + prev);
+//            logger.info("啊，有缓存，太美妙了：{}", prev);
             return prev;
         }
 
@@ -230,6 +229,7 @@ public class YoudaoTranslate extends BaseTranslate {
 
         if (errorCode.equals("0")) {
             translation = jsonObject.getStr("translation");
+            putToCache(sLang, tLang, lvShortText, translation);
         } else {
             // 出错了，从 errorCode2DescMap 找错误描述信息
             String errorCodeDesc = ErrorCode2Desc.translateErrorCode2Desc(errorCode);
@@ -248,38 +248,7 @@ public class YoudaoTranslate extends BaseTranslate {
         return true;
     }
 
-    /**
-     * 设置里面该插件的配置按钮被按下后弹出的界面、控制逻辑、获取数据，存储数据
-     */
-    @Override
-    public void showConfigurationUI(Window parent) {
-        MTConfigDialog dialog = new MTConfigDialog(parent, getName()) {
-            @Override
-            protected void onConfirm() {
-                String id = panel.valueField1.getText().trim();
-                String key = panel.valueField2.getText().trim();
-                boolean temporary = panel.temporaryCheckBox.isSelected();
+    // 不做这个函数的测试
+//    public void showConfigurationUI(Window parent) {
 
-                // 利用 OmegaT 提供的 API 来设置 PROPERTY_API_SECRET_KEY 变量代表的名字的值
-                // 可以想象 OmegaT 提供了一个类似 HashMap 的结构，
-                // setCredential 就是用指定 key 存储值，getCredential 就是用指定 key 取值
-                // 第三个参数是是否启用“仅为本次会话保存”
-                setCredential(PROPERTY_APP_ID, id, temporary);
-                setCredential(PROPERTY_APP_KEY, key, temporary);
-            }
-        };
-        // 弹出 Token 设置窗口的 label 显示的文字
-        dialog.panel.valueLabel1.setText("应用ID");
-        // 利用 OmegaT 提供的 API 来获取 PROPERTY_API_SECRET_KEY 变量代表的名字的值
-        dialog.panel.valueField1.setText(getCredential(PROPERTY_APP_ID));
-
-        dialog.panel.valueLabel2.setText("应用密钥");
-        dialog.panel.valueField2.setText(getCredential(PROPERTY_APP_KEY));
-
-
-
-        // 设置是否勾选“仅为本次会话保存”。
-        dialog.panel.temporaryCheckBox.setSelected(isCredentialStoredTemporarily(PROPERTY_APP_KEY));
-        dialog.show();
-    }
 }
