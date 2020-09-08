@@ -252,7 +252,8 @@ sh			sh
             .put("ig", "ig")
             .put("is", "is")
             .put("it", "it")
-            .put("ja", "jw")  //有道官网就是坚持这样写 爪哇语
+            .put("ja", "ja")
+            .put("jv", "jw")  //有道官网就是坚持这样写 爪哇语
             .put("ka", "ka")
             .put("kk", "kk")
             .put("km", "km")

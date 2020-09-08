@@ -14,23 +14,20 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.omegat.core.Core;
-import org.omegat.gui.exttrans.MTConfigDialog;
 import org.omegat.util.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.xffish.machinetranslators.util.ErrorCode2Desc;
 import xyz.xffish.machinetranslators.util.OLang2YLang;
 
-import java.awt.*;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 搞不定脱离 OmegaT 环境的初始化，只能重新搞一个类似功能但不依赖 OmegaT 的功能类.
  * BaseTranslate 构造函数用到了已经初始化的 Preferences 类，测试环境搞不定如何初始化。
  * 只能手动维护 YoudaoTranslate 和 YoudaoTranslateClone 的同步
  */
-public class YoudaoTranslateClone extends BaseTranslateClone{
+public class YoudaoTranslateClone extends BaseTranslateClone {
     /**
      * 设置存储 key 的名字，读取和设置值由 OmegaT 提供 API 来操作
      */
@@ -46,9 +43,6 @@ public class YoudaoTranslateClone extends BaseTranslateClone{
     protected static final String URL = "https://openapi.youdao.com/api";
 
     private static final Logger logger = LoggerFactory.getLogger(YoudaoTranslate.class);
-
-
-
 
 
     /**
@@ -220,6 +214,7 @@ public class YoudaoTranslateClone extends BaseTranslateClone{
 
 
         logger.info("response body = {}", responseBody);
+        System.out.println("response body = " + responseBody);
 
         JSONObject jsonObject = JSONUtil.parseObj(responseBody);
 

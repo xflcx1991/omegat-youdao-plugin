@@ -56,7 +56,7 @@ public class YoudaoTranslate extends BaseTranslate {
      * 在软件启动时会自动调用该函数来注册插件
      */
     public static void loadPlugins() {
-        logger.info("加载 YoudaoTranslate Plugin");
+        logger.debug("加载 YoudaoTranslate Plugin");
 
         Core.registerMachineTranslationClass(YoudaoTranslate.class);
     }
@@ -76,7 +76,7 @@ public class YoudaoTranslate extends BaseTranslate {
     }
 
     /**
-     * 在软件里显示该翻译插件的名字
+     * 在软件里显示该翻译插件的名字.
      *
      * @return 本翻译插件显示的名字
      */
@@ -130,7 +130,7 @@ public class YoudaoTranslate extends BaseTranslate {
      */
     @Override
     protected String translate(Language sLang, Language tLang, String text) throws Exception {
-        logger.info("translate,sLang={},tLang={},text={}", sLang, tLang, text);
+        logger.debug("translate,sLang={},tLang={},text={}", sLang, tLang, text);
         /*
          * 请求用 post+表单形式
          * 调用API需要向接口发送以下字段来访问服务。
@@ -166,7 +166,7 @@ public class YoudaoTranslate extends BaseTranslate {
         String prev = getFromCache(sLang, tLang, lvShortText);
         if (prev != null) {
             // 啊，有缓存，那就直接返回不用请求了
-            logger.info("啊，有缓存，太美妙了：{}", prev);
+            logger.debug("啊，有缓存，太美妙了：{}", prev);
             return prev;
         }
 
@@ -193,7 +193,7 @@ public class YoudaoTranslate extends BaseTranslate {
         String secretKey = getCredential(PROPERTY_APP_KEY);
 
 
-        logger.info("secretKey = {}", secretKey);
+        logger.debug("secretKey = {}", secretKey);
         String curtime = String.valueOf(System.currentTimeMillis() / 1000);
         // 开始计算
         String originSign = appKey + truncate(lvShortText) + uuid + curtime + secretKey;
@@ -215,12 +215,13 @@ public class YoudaoTranslate extends BaseTranslate {
 
 
         String paramMapStr = JSONUtil.toJsonStr(paramMap);
-        logger.info("paramMap = {}", paramMapStr);
+        logger.debug("paramMap = {}", paramMapStr);
         // -----------------发 POST 请求-----------------
         String responseBody = HttpUtil.post(URL, paramMap);
 
 
-        logger.info("response body = {}", responseBody);
+        logger.debug("response body = {}", responseBody);
+
 
         JSONObject jsonObject = JSONUtil.parseObj(responseBody);
 
@@ -230,6 +231,8 @@ public class YoudaoTranslate extends BaseTranslate {
 
         if (errorCode.equals("0")) {
             translation = jsonObject.getStr("translation");
+            // 把这次结果添加进缓存
+            putToCache(sLang, tLang, lvShortText, translation);
         } else {
             // 出错了，从 errorCode2DescMap 找错误描述信息
             String errorCodeDesc = ErrorCode2Desc.translateErrorCode2Desc(errorCode);
