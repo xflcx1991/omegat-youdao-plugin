@@ -23,8 +23,8 @@ version = '0.2'
 
 configurations {
     provided
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
+//    integrationTestCompile.extendsFrom testCompile
+//    integrationTestRuntime.extendsFrom testRuntime
 }
 
 sourceSets {
@@ -34,14 +34,14 @@ sourceSets {
         test.runtimeClasspath += configurations.provided
     }
 
-    integrationTest {
-        compileClasspath += main.output + test.output + configurations.provided
-        runtimeClasspath += main.output + test.output + configurations.provided
-        java {
-            srcDir file('src/integration-test/java')
-        }
-        resources.srcDir file('src/integration-test/resources')
-    }
+//    integrationTest {
+//        compileClasspath += main.output + test.output + configurations.provided
+//        runtimeClasspath += main.output + test.output + configurations.provided
+//        java {
+//            srcDir file('src/integration-test/java')
+//        }
+//        resources.srcDir file('src/integration-test/resources')
+//    }
 }
 
 repositories {
@@ -60,14 +60,15 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'xmlunit:xmlunit:1.6'
     testCompile 'org.madlonkay.supertmxmerge:supertmxmerge:2.0.1'
-    integrationTestCompile 'org.testng:testng:6.9.10'
-    integrationTestCompile 'com.alibaba:fastjson:1.2.17'
+//    integrationTestCompile 'org.testng:testng:6.9.10'
+//    integrationTestCompile 'com.alibaba:fastjson:1.2.17'
 
 
     // https://mvnrepository.com/artifact/cn.hutool/hutool-json
     compile group: 'cn.hutool', name: 'hutool-json', version: '5.4.0'
     // https://mvnrepository.com/artifact/cn.hutool/hutool-http
-    compile group: 'cn.hutool', name: 'hutool-http', version: '5.4.0'// https://mvnrepository.com/artifact/cn.hutool/hutool-crypto
+    compile group: 'cn.hutool', name: 'hutool-http', version: '5.4.0'
+    // https://mvnrepository.com/artifact/cn.hutool/hutool-crypto
     compile group: 'cn.hutool', name: 'hutool-crypto', version: '5.4.0'
 
 }
@@ -122,22 +123,22 @@ tasks.withType(FindBugs) {
     setGroup('Verification')
 }
 
-task integrationTest(type: Test) {
-    description = "Integration/Acceptance Test"
-    testClassesDir = sourceSets.integrationTest.output.classesDir
-    classpath = sourceSets.integrationTest.runtimeClasspath
-    useTestNG()
-}
-check.dependsOn integrationTest
-integrationTest.mustRunAfter test
-tasks.integrationTest.setGroup('Verification')
+//task integrationTest(type: Test) {
+//    description = "Integration/Acceptance Test"
+//    testClassesDir = sourceSets.integrationTest.output.classesDir
+//    classpath = sourceSets.integrationTest.runtimeClasspath
+//    useTestNG()
+//}
+//check.dependsOn integrationTest
+//integrationTest.mustRunAfter test
+//tasks.integrationTest.setGroup('Verification')
 
 // Hack for IntelliJ IDEA 
-idea {
-    module {
-        testSourceDirs += file('src/integration-test/java')
-    }
-}
+//idea {
+//    module {
+//        testSourceDirs += file('src/integration-test/java')
+//    }
+//}
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allSource
