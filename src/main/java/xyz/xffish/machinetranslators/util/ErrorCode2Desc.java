@@ -4,11 +4,10 @@ import cn.hutool.core.map.MapUtil;
 
 import java.util.Map;
 
-public class ErrorCode2Desc {
+public final class ErrorCode2Desc {
     // 换一个批量向 HashMap插入值的方法
     // 复制粘贴 http://ai.youdao.com/DOCSIRMA/html/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E7%BF%BB%E8%AF%91/API%E6%96%87%E6%A1%A3/%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E6%9C%8D%E5%8A%A1/%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E6%9C%8D%E5%8A%A1-API%E6%96%87%E6%A1%A3.html#section-10
-    // TODO:还没有把所有的错误码描述信息写完
-    private static final Map<Object, Object> errorCode2DescMap = MapUtil.of(new String[][]{
+    private static final Map<Object, Object> ERROR_CODE_2_DESC_MAP = MapUtil.of(new String[][]{
             {"101", "缺少必填的参数,首先确保必填参数齐全，然后确认参数书写是否正确。"},
             {"102", "不支持的语言类型"},
             {"103", "翻译文本过长"},
@@ -88,18 +87,76 @@ public class ErrorCode2Desc {
             {"5004", "识别图片过大"},
             {"5005", "不支持的图片类型"},
             {"5006", "文件为空"},
+            {"5201", "解密错误，图片base64解密失败"},
+            {"5301", "OCR段落识别失败"},
+            {"5411", "访问频率受限"},
+            {"5412", "超过最大识别流量"},
+            {"9001", "不支持的语音格式"},
+            {"9002", "不支持的语音采样率"},
+            {"9003", "不支持的语音声道"},
+            {"9004", "不支持的语音上传类型"},
+            {"9005", "不支持的语音识别 Language类型"},
+            {"9301", "ASR识别失败"},
+            {"9303", "服务器内部错误"},
+            {"9411", "访问频率受限（超过最大调用次数）"},
+            {"9412", "超过最大处理语音长度"},
+            {"10001", "无效的OCR类型"},
+            {"10002", "不支持的OCR image类型"},
+            {"10004", "识别图片过大"},
+            {"10201", "图片base64解密失败"},
+            {"10301", "OCR段落识别失败"},
+            {"10411", "访问频率受限"},
+            {"10412", "超过最大识别流量"},
+            {"11001", "不支持的语音识别格式"},
+            {"11002", "不支持的语音识别采样率"},
+            {"11003", "不支持的语音识别声道"},
+            {"11004", "不支持的语音上传类型"},
+            {"11005", "不支持的语言类型"},
+            {"11006", "识别音频文件过大"},
+            {"11007", "识别音频时长过长，最大支持30s"},
+            {"11201", "解密失败"},
+            {"11301", "语音识别失败"},
+            {"11303", "服务的异常"},
+            {"11411", "访问频率受限,请稍后访问"},
+            {"11412", "超过最大请求时长"},
+            {"12001", "图片尺寸过大"},
+            {"12002", "图片base64解密失败"},
+            {"12003", "引擎服务器返回错误"},
+            {"12004", "图片为空"},
+            {"12005", "不支持的识别图片类型"},
+            {"12006", "图片无匹配结果"},
+            {"13001", "不支持的角度类型"},
+            {"13002", "不支持的文件类型"},
+            {"13003", "表格识别图片过大"},
+            {"13004", "文件为空"},
+            {"13301", "表格识别失败"},
+            {"15001", "需要图片"},
+            {"15002", "图片过大（1M）"},
+            {"15003", "服务调用失败"},
+            {"17001", "需要图片"},
+            {"17002", "图片过大（1M）"},
+            {"17003", "识别类型未找到"},
+            {"17004", "不支持的识别类型"},
+            {"17005", "服务调用失败"},
     });
 
     /**
-     * 根据错误码给出错误描述信息
+     * 根据错误码给出错误描述信息.
+     *
      * @param errorCode 错误码
      * @return 错误描述信息
      */
-    public static String translateErrorCode2Desc(String errorCode){
-        String errorCodeDesc = (String) errorCode2DescMap.get(errorCode);
+    public static String translateErrorCode2Desc(final String errorCode) {
+        String errorCodeDesc = (String) ERROR_CODE_2_DESC_MAP.get(errorCode);
         if (errorCodeDesc == null) {
             errorCodeDesc = "未知错误码";
         }
         return errorCodeDesc;
+    }
+
+    /**
+     *  Utility classes should not have a public or default constructor.
+     */
+    private ErrorCode2Desc() {
     }
 }

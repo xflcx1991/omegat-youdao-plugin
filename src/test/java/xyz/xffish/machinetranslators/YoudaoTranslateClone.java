@@ -1,10 +1,10 @@
-/*
-参考了
-https://github.com/yoyicue/omegat-tencent-plugin
-https://github.com/omegat-org/omegat/blob/854b6b5a66a0306e5c27e74c0b5d656ed80b2bd4/src/org/omegat/core/machinetranslators/YandexTranslate.java
-GoogleTranslateWithoutApiKey
-的写法，感谢上述作者
-彩云小译 API 文档：https://fanyi.caiyunapp.com/#/api
+/**************************************************************************
+ * 参考了
+ * https://github.com/yoyicue/omegat-tencent-plugin
+ * https://github.com/omegat-org/omegat/blob/854b6b5a66a0306e5c27e74c0b5d656ed80b2bd4/src/org/omegat/core/machinetranslators/YandexTranslate.java
+ * GoogleTranslateWithoutApiKey
+ * 的写法，感谢上述作者
+ * 有道翻译 API 文档：http://ai.youdao.com/DOCSIRMA/html/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E7%BF%BB%E8%AF%91/API%E6%96%87%E6%A1%A3/%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E6%9C%8D%E5%8A%A1/%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E6%9C%8D%E5%8A%A1-API%E6%96%87%E6%A1%A3.html
  */
 package xyz.xffish.machinetranslators;
 
@@ -42,14 +42,14 @@ public class YoudaoTranslateClone extends BaseTranslateClone {
      */
     protected static final String URL = "https://openapi.youdao.com/api";
 
-    private static final Logger logger = LoggerFactory.getLogger(YoudaoTranslate.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(YoudaoTranslateClone.class);
 
 
     /**
      * 在软件启动时会自动调用该函数来注册插件
      */
     public static void loadPlugins() {
-        logger.info("加载 YoudaoTranslate Plugin");
+        LOGGER.info("加载 YoudaoTranslate Plugin");
 
         Core.registerMachineTranslationClass(YoudaoTranslate.class);
     }
@@ -64,8 +64,8 @@ public class YoudaoTranslateClone extends BaseTranslateClone {
      */
     @Override
     protected String getPreferenceName() {
-        System.out.println("YoudaoTranslate - getPreferenceName");
-        return "allow_caiyun_Youdao_translate";
+
+        return "allow_Youdao_translate";
     }
 
     /**
@@ -75,7 +75,7 @@ public class YoudaoTranslateClone extends BaseTranslateClone {
      */
     @Override
     public String getName() {
-        System.out.println("YoudaoTranslate - getName");
+
         return "Youdao Translate";
     }
 
@@ -96,12 +96,13 @@ public class YoudaoTranslateClone extends BaseTranslateClone {
     }
 
     /**
-     * 照抄有道官方 java 示例.
+     * 截断带翻译的文字以便简化计算签名.
+     * 照抄有道官方 java 示例，
      * http://ai.youdao.com/DOCSIRMA/html/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E7%BF%BB%E8%AF%91/API%E6%96%87%E6%A1%A3/%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E6%9C%8D%E5%8A%A1/%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E6%9C%8D%E5%8A%A1-API%E6%96%87%E6%A1%A3.html#section-14
-     * 截断带翻译的文字以便简化计算签名
+     * 如果长度小于等于20那就返回原文，如果大于20，那就取前10个字符加长度加后10个字符组成新字符串并返回
      *
-     * @param q
-     * @return
+     * @param q 原始原文
+     * @return 截断后的原文
      */
     public static String truncate(String q) {
         if (q == null) {
@@ -123,7 +124,7 @@ public class YoudaoTranslateClone extends BaseTranslateClone {
      */
     @Override
     protected String translate(Language sLang, Language tLang, String text) throws Exception {
-        logger.info("translate,sLang={},tLang={},text={}", sLang, tLang, text);
+        LOGGER.info("translate,sLang={},tLang={},text={}", sLang, tLang, text);
         /*
          * 请求用 post+表单形式
          * 调用API需要向接口发送以下字段来访问服务。
@@ -158,7 +159,7 @@ public class YoudaoTranslateClone extends BaseTranslateClone {
         String prev = getFromCache(sLang, tLang, lvShortText);
         if (prev != null) {
             // 啊，有缓存，那就直接返回不用请求了
-            System.out.println("啊，有缓存，太美妙了：" + prev);
+
 //            logger.info("啊，有缓存，太美妙了：{}", prev);
             return prev;
         }
@@ -177,7 +178,7 @@ public class YoudaoTranslateClone extends BaseTranslateClone {
         // -----------------获取UUID-----------------
         // 官方 python3 示例就是带“-”的 UUID
         String uuid = IdUtil.randomUUID();
-        ;
+
 
         // -----------------计算签名 sign-----------------
         // sha256(应用ID+input+salt+curtime+应用密钥)
@@ -186,7 +187,7 @@ public class YoudaoTranslateClone extends BaseTranslateClone {
         String secretKey = getCredential(PROPERTY_APP_KEY);
 
 
-        logger.info("secretKey = {}", secretKey);
+        LOGGER.info("secretKey = {}", secretKey);
         String curtime = String.valueOf(System.currentTimeMillis() / 1000);
         // 开始计算
         String originSign = appKey + truncate(lvShortText) + uuid + curtime + secretKey;
@@ -208,13 +209,13 @@ public class YoudaoTranslateClone extends BaseTranslateClone {
 
 
         String paramMapStr = JSONUtil.toJsonStr(paramMap);
-        logger.info("paramMap = {}", paramMapStr);
+        LOGGER.info("paramMap = {}", paramMapStr);
         // -----------------发 POST 请求-----------------
         String responseBody = HttpUtil.post(URL, paramMap);
 
 
-        logger.info("response body = {}", responseBody);
-        System.out.println("response body = " + responseBody);
+        LOGGER.info("response body = {}", responseBody);
+
 
         JSONObject jsonObject = JSONUtil.parseObj(responseBody);
 

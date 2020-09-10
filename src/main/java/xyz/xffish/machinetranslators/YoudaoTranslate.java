@@ -1,10 +1,10 @@
-/*
-参考了
-https://github.com/yoyicue/omegat-tencent-plugin
-https://github.com/omegat-org/omegat/blob/854b6b5a66a0306e5c27e74c0b5d656ed80b2bd4/src/org/omegat/core/machinetranslators/YandexTranslate.java
-GoogleTranslateWithoutApiKey
-的写法，感谢上述作者
-彩云小译 API 文档：https://fanyi.caiyunapp.com/#/api
+/**************************************************************************
+ * 参考了
+ * https://github.com/yoyicue/omegat-tencent-plugin
+ * https://github.com/omegat-org/omegat/blob/854b6b5a66a0306e5c27e74c0b5d656ed80b2bd4/src/org/omegat/core/machinetranslators/YandexTranslate.java
+ * GoogleTranslateWithoutApiKey
+ * 的写法，感谢上述作者
+ * 有道翻译 API 文档：http://ai.youdao.com/DOCSIRMA/html/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E7%BF%BB%E8%AF%91/API%E6%96%87%E6%A1%A3/%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E6%9C%8D%E5%8A%A1/%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E6%9C%8D%E5%8A%A1-API%E6%96%87%E6%A1%A3.html
  */
 package xyz.xffish.machinetranslators;
 
@@ -22,18 +22,13 @@ import org.slf4j.LoggerFactory;
 import xyz.xffish.machinetranslators.util.ErrorCode2Desc;
 import xyz.xffish.machinetranslators.util.OLang2YLang;
 
-import java.awt.*;
+import java.awt.Window;
 import java.util.HashMap;
-import java.util.Map;
 
-/*
-1. 多语种
-2. 代码结构
-3. 增加缓存，减少网络请求
- */
+
 public class YoudaoTranslate extends BaseTranslate {
     /**
-     * 设置存储 key 的名字，读取和设置值由 OmegaT 提供 API 来操作
+     * 设置存储 key 的名字，读取和设置值由 OmegaT 提供 API 来操作.
      */
     private static final String PROPERTY_APP_KEY = "youdao.app.key";
     private static final String PROPERTY_APP_ID = "youdao.app.id";
@@ -42,37 +37,36 @@ public class YoudaoTranslate extends BaseTranslate {
      */
 //    protected static final String PROPERTY_API_OFFICIAL_TEST_SECRET_KEY = "";
     /**
-     * 有道翻译请求 URL
+     * 有道翻译请求 URL.
      */
     protected static final String URL = "https://openapi.youdao.com/api";
 
-    private static final Logger logger = LoggerFactory.getLogger(YoudaoTranslate.class);
-
-
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(YoudaoTranslate.class);
 
 
     /**
-     * 在软件启动时会自动调用该函数来注册插件
+     * 在软件启动时会自动调用该函数来注册插件.
      */
     public static void loadPlugins() {
-        logger.debug("加载 YoudaoTranslate Plugin");
+        LOGGER.debug("加载 YoudaoTranslate Plugin");
 
         Core.registerMachineTranslationClass(YoudaoTranslate.class);
     }
 
+    /**
+     * 卸载插件，可以留空，示例代码就留空.
+     */
     public static void unloadPlugins() {
     }
 
     /**
-     * 显示该插件介绍性的话
+     * 显示该插件介绍性的话.
      *
      * @return 介绍性话语
      */
     @Override
     protected String getPreferenceName() {
-        System.out.println("YoudaoTranslate - getPreferenceName");
-        return "allow_caiyun_Youdao_translate";
+        return "allow_Youdao_translate";
     }
 
     /**
@@ -82,45 +76,29 @@ public class YoudaoTranslate extends BaseTranslate {
      */
     @Override
     public String getName() {
-        System.out.println("YoudaoTranslate - getName");
         return "Youdao Translate";
     }
 
-    /**
-     * 将 OmegaT 的语言代码转换成有道翻译识别的语言代码<br>
-     * 找不到就输出 auto
-     *
-     * @param sLang
-     * @return
-     */
-    private String omegatLang2YoudaoLang(String sLang) {
-        String tLang = OLang2YLang.translateOLang2YLang(sLang);
-        // 找不到就改成自动识别
-        if (tLang == null) {
-            tLang = "auto";
-        }
-        return tLang;
-    }
 
     /**
-     * 照抄有道官方 java 示例.
+     * 截断带翻译的文字以便简化计算签名.
+     * 照抄有道官方 java 示例，
      * http://ai.youdao.com/DOCSIRMA/html/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E7%BF%BB%E8%AF%91/API%E6%96%87%E6%A1%A3/%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E6%9C%8D%E5%8A%A1/%E6%96%87%E6%9C%AC%E7%BF%BB%E8%AF%91%E6%9C%8D%E5%8A%A1-API%E6%96%87%E6%A1%A3.html#section-14
-     * 截断带翻译的文字以便简化计算签名
+     * 如果长度小于等于20那就返回原文，如果大于20，那就取前10个字符加长度加后10个字符组成新字符串并返回
      *
-     * @param q
-     * @return
+     * @param q 原始原文
+     * @return 截断后的原文
      */
-    public static String truncate(String q) {
+    public static String truncate(final String q) {
         if (q == null) {
             return null;
         }
         int len = q.length();
-        String result;
         return len <= 20 ? q : (q.substring(0, 10) + len + q.substring(len - 10, len));
     }
 
     /**
-     * 插件主体功能函数，接收原文，获得译文并返回
+     * 插件主体功能函数，接收原文，获得译文并返回.
      *
      * @param sLang 原文的语言
      * @param tLang 译文的语言
@@ -129,8 +107,8 @@ public class YoudaoTranslate extends BaseTranslate {
      * @throws Exception
      */
     @Override
-    protected String translate(Language sLang, Language tLang, String text) throws Exception {
-        logger.debug("translate,sLang={},tLang={},text={}", sLang, tLang, text);
+    protected String translate(final Language sLang, final Language tLang, final String text) throws Exception {
+        LOGGER.debug("translate,sLang={},tLang={},text={}", sLang, tLang, text);
         /*
          * 请求用 post+表单形式
          * 调用API需要向接口发送以下字段来访问服务。
@@ -162,21 +140,21 @@ public class YoudaoTranslate extends BaseTranslate {
         //判断翻译缓存里有没有
         // U+2026 HORIZONTAL ELLIPSIS 水平省略号 …
         String lvShortText = text.length() > 5000 ? text.substring(0, 4997) + "\u2026" : text;
-        // TODO:不写 putToCache 这里的cache是无用的
+
         String prev = getFromCache(sLang, tLang, lvShortText);
         if (prev != null) {
             // 啊，有缓存，那就直接返回不用请求了
-            logger.debug("啊，有缓存，太美妙了：{}", prev);
+            LOGGER.debug("啊，有缓存，太美妙了：{}", prev);
             return prev;
         }
 
 
         // -----------------转换语言代码-----------------
         String lvSourceLang = sLang.getLanguageCode().substring(0, 2).toLowerCase();
-        lvSourceLang = omegatLang2YoudaoLang(lvSourceLang);
+        lvSourceLang = OLang2YLang.translateOLang2YLang(lvSourceLang);
 
         String lvTargetLang = tLang.getLanguageCode().substring(0, 2).toLowerCase();
-        lvTargetLang = omegatLang2YoudaoLang(lvTargetLang);
+        lvTargetLang = OLang2YLang.translateOLang2YLang(lvTargetLang);
 
         // 获取应用 ID——appKey
         String appKey = getCredential(PROPERTY_APP_ID);
@@ -184,7 +162,7 @@ public class YoudaoTranslate extends BaseTranslate {
         // -----------------获取UUID-----------------
         // 官方 python3 示例就是带“-”的 UUID
         String uuid = IdUtil.randomUUID();
-        ;
+
 
         // -----------------计算签名 sign-----------------
         // sha256(应用ID+input+salt+curtime+应用密钥)
@@ -193,7 +171,7 @@ public class YoudaoTranslate extends BaseTranslate {
         String secretKey = getCredential(PROPERTY_APP_KEY);
 
 
-        logger.debug("secretKey = {}", secretKey);
+        LOGGER.debug("secretKey = {}", secretKey);
         String curtime = String.valueOf(System.currentTimeMillis() / 1000);
         // 开始计算
         String originSign = appKey + truncate(lvShortText) + uuid + curtime + secretKey;
@@ -215,12 +193,12 @@ public class YoudaoTranslate extends BaseTranslate {
 
 
         String paramMapStr = JSONUtil.toJsonStr(paramMap);
-        logger.debug("paramMap = {}", paramMapStr);
+        LOGGER.debug("paramMap = {}", paramMapStr);
         // -----------------发 POST 请求-----------------
         String responseBody = HttpUtil.post(URL, paramMap);
 
 
-        logger.debug("response body = {}", responseBody);
+        LOGGER.debug("response body = {}", responseBody);
 
 
         JSONObject jsonObject = JSONUtil.parseObj(responseBody);
@@ -229,6 +207,7 @@ public class YoudaoTranslate extends BaseTranslate {
 
         String errorCode = jsonObject.getStr("errorCode");
 
+
         if (errorCode.equals("0")) {
             translation = jsonObject.getStr("translation");
             // 把这次结果添加进缓存
@@ -236,7 +215,7 @@ public class YoudaoTranslate extends BaseTranslate {
         } else {
             // 出错了，从 errorCode2DescMap 找错误描述信息
             String errorCodeDesc = ErrorCode2Desc.translateErrorCode2Desc(errorCode);
-            translation = errorCodeDesc;
+            translation = errorCode + "-" + errorCodeDesc;
         }
 
         return translation;
@@ -244,7 +223,7 @@ public class YoudaoTranslate extends BaseTranslate {
 
 
     /**
-     * 是否在设置界面允许该插件的配置按钮可用，如果 false，配置按钮是灰色不可点的，也就没法配置 Token 了
+     * 是否在设置界面允许该插件的配置按钮可用，如果 false，配置按钮是灰色不可点的，也就没法配置 Token 了.
      */
     @Override
     public boolean isConfigurable() {
@@ -252,10 +231,10 @@ public class YoudaoTranslate extends BaseTranslate {
     }
 
     /**
-     * 设置里面该插件的配置按钮被按下后弹出的界面、控制逻辑、获取数据，存储数据
+     * 设置里面该插件的配置按钮被按下后弹出的界面、控制逻辑、获取数据，存储数据.
      */
     @Override
-    public void showConfigurationUI(Window parent) {
+    public void showConfigurationUI(final Window parent) {
         MTConfigDialog dialog = new MTConfigDialog(parent, getName()) {
             @Override
             protected void onConfirm() {
@@ -278,7 +257,6 @@ public class YoudaoTranslate extends BaseTranslate {
 
         dialog.panel.valueLabel2.setText("应用密钥");
         dialog.panel.valueField2.setText(getCredential(PROPERTY_APP_KEY));
-
 
 
         // 设置是否勾选“仅为本次会话保存”。

@@ -19,6 +19,7 @@ public class YoudaoTranslateCloneTest {
 
     private static final String PROPERTY_APP_KEY = "youdao.app.key";
     private static final String PROPERTY_APP_ID = "youdao.app.id";
+
     @Before
     public void setUp() throws Exception {
         System.out.println(logger.isTraceEnabled());
@@ -40,7 +41,6 @@ public class YoudaoTranslateCloneTest {
         logger.debug("debug - setUp - {}", youdaoTranslateCloneInstance.URL);
 
 
-
         youdaoTranslateCloneInstance = new YoudaoTranslateClone();
 
         boolean temporary = false;
@@ -48,8 +48,6 @@ public class YoudaoTranslateCloneTest {
         String key = "UHVujVcLc82UkCoIpBvXTl82tJMOFH3n";
         youdaoTranslateCloneInstance.setCredential(PROPERTY_APP_ID, id, temporary);
         youdaoTranslateCloneInstance.setCredential(PROPERTY_APP_KEY, key, temporary);
-
-
 
 
     }
@@ -94,12 +92,16 @@ public class YoudaoTranslateCloneTest {
 
     @Test
     public void getPreferenceNameTest() {
-        logger.info("getPreferenceNameTest - {}", youdaoTranslateCloneInstance.getPreferenceName());
+        String result = youdaoTranslateCloneInstance.getPreferenceName();
+        Assert.assertEquals("should be \"allow_Youdao_translate\"", "allow_Youdao_translate", result);
+
     }
+
 
     @Test
     public void getNameTest() {
-        logger.info("getNameTest - {}", youdaoTranslateCloneInstance.getName());
+        String result = youdaoTranslateCloneInstance.getName();
+        Assert.assertEquals("should be \"Youdao Translate\"", "Youdao Translate", result);
     }
 
     @Test
@@ -112,22 +114,25 @@ public class YoudaoTranslateCloneTest {
         testMethod.setAccessible(true);
         //只检查常用语言和一个auto
         Object result = testMethod.invoke(youdaoTranslateCloneInstance, "zh");
-        Assert.assertEquals("should be zh-CHS", result, "zh-CHS");
+        Assert.assertEquals("should be zh-CHS", "zh-CHS", result);
 
         result = testMethod.invoke(youdaoTranslateCloneInstance, "en");
-        Assert.assertEquals("should be en", result, "en");
+        Assert.assertEquals("should be en", "en", result);
 
         result = testMethod.invoke(youdaoTranslateCloneInstance, "ja");
-        Assert.assertEquals("should be en", result, "ja");
+        Assert.assertEquals("should be ja", "ja", result);
 
         result = testMethod.invoke(youdaoTranslateCloneInstance, "ko");
-        Assert.assertEquals("should be en", result, "ko");
+        Assert.assertEquals("should be ko", "ko", result);
 
         result = testMethod.invoke(youdaoTranslateCloneInstance, "de");
-        Assert.assertEquals("should be en", result, "de");
+        Assert.assertEquals("should be de", "de", result);
+
+        result = testMethod.invoke(youdaoTranslateCloneInstance, "vi");
+        Assert.assertEquals("should be auto", "auto", result);
+
 
     }
-
 
 
 }
