@@ -22,11 +22,11 @@ public class YoudaoTranslateCloneTest {
 
     @Before
     public void setUp() throws Exception {
-        System.out.println(logger.isTraceEnabled());
-        System.out.println(logger.isDebugEnabled());
-        System.out.println(logger.isInfoEnabled());
-        System.out.println(logger.isWarnEnabled());
-        System.out.println(logger.isErrorEnabled());
+//        System.out.println(logger.isTraceEnabled());
+//        System.out.println(logger.isDebugEnabled());
+//        System.out.println(logger.isInfoEnabled());
+//        System.out.println(logger.isWarnEnabled());
+//        System.out.println(logger.isErrorEnabled());
 
 //        logger.setLevel(Level.WARN);
 
